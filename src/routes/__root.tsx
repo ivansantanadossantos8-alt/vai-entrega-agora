@@ -80,6 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
 
+      { name: "twitter:title", content: "Vai Até Você — Entregador" },
+      { name: "twitter:description", content: "App do entregador parceiro Vai Até Você." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/37ad9d94-288a-400a-a095-4757c285d552/id-preview-45648716--ba7a229e-4c84-4a85-969f-0e141cfb7e44.lovable.app-1779846172641.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/37ad9d94-288a-400a-a095-4757c285d552/id-preview-45648716--ba7a229e-4c84-4a85-969f-0e141cfb7e44.lovable.app-1779846172641.png" },
     ],
     links: [
       {
