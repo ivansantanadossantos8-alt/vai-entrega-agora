@@ -9,38 +9,248 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PendingRouteImport } from './routes/pending'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as EarningsRouteImport } from './routes/earnings'
+import { Route as DeliveriesRouteImport } from './routes/deliveries'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DeliveryNewRouteImport } from './routes/delivery.new'
+import { Route as DeliveryActiveRouteImport } from './routes/delivery.active'
 
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PendingRoute = PendingRouteImport.update({
+  id: '/pending',
+  path: '/pending',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EarningsRoute = EarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeliveriesRoute = DeliveriesRouteImport.update({
+  id: '/deliveries',
+  path: '/deliveries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeliveryNewRoute = DeliveryNewRouteImport.update({
+  id: '/delivery/new',
+  path: '/delivery/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeliveryActiveRoute = DeliveryActiveRouteImport.update({
+  id: '/delivery/active',
+  path: '/delivery/active',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/deliveries': typeof DeliveriesRoute
+  '/earnings': typeof EarningsRoute
+  '/home': typeof HomeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/pending': typeof PendingRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/support': typeof SupportRoute
+  '/delivery/active': typeof DeliveryActiveRoute
+  '/delivery/new': typeof DeliveryNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/deliveries': typeof DeliveriesRoute
+  '/earnings': typeof EarningsRoute
+  '/home': typeof HomeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/pending': typeof PendingRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/support': typeof SupportRoute
+  '/delivery/active': typeof DeliveryActiveRoute
+  '/delivery/new': typeof DeliveryNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/deliveries': typeof DeliveriesRoute
+  '/earnings': typeof EarningsRoute
+  '/home': typeof HomeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/pending': typeof PendingRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/support': typeof SupportRoute
+  '/delivery/active': typeof DeliveryActiveRoute
+  '/delivery/new': typeof DeliveryNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/deliveries'
+    | '/earnings'
+    | '/home'
+    | '/onboarding'
+    | '/pending'
+    | '/profile'
+    | '/register'
+    | '/support'
+    | '/delivery/active'
+    | '/delivery/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/deliveries'
+    | '/earnings'
+    | '/home'
+    | '/onboarding'
+    | '/pending'
+    | '/profile'
+    | '/register'
+    | '/support'
+    | '/delivery/active'
+    | '/delivery/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/deliveries'
+    | '/earnings'
+    | '/home'
+    | '/onboarding'
+    | '/pending'
+    | '/profile'
+    | '/register'
+    | '/support'
+    | '/delivery/active'
+    | '/delivery/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  DeliveriesRoute: typeof DeliveriesRoute
+  EarningsRoute: typeof EarningsRoute
+  HomeRoute: typeof HomeRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PendingRoute: typeof PendingRoute
+  ProfileRoute: typeof ProfileRoute
+  RegisterRoute: typeof RegisterRoute
+  SupportRoute: typeof SupportRoute
+  DeliveryActiveRoute: typeof DeliveryActiveRoute
+  DeliveryNewRoute: typeof DeliveryNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pending': {
+      id: '/pending'
+      path: '/pending'
+      fullPath: '/pending'
+      preLoaderRoute: typeof PendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/earnings': {
+      id: '/earnings'
+      path: '/earnings'
+      fullPath: '/earnings'
+      preLoaderRoute: typeof EarningsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deliveries': {
+      id: '/deliveries'
+      path: '/deliveries'
+      fullPath: '/deliveries'
+      preLoaderRoute: typeof DeliveriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +258,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/delivery/new': {
+      id: '/delivery/new'
+      path: '/delivery/new'
+      fullPath: '/delivery/new'
+      preLoaderRoute: typeof DeliveryNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delivery/active': {
+      id: '/delivery/active'
+      path: '/delivery/active'
+      fullPath: '/delivery/active'
+      preLoaderRoute: typeof DeliveryActiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  DeliveriesRoute: DeliveriesRoute,
+  EarningsRoute: EarningsRoute,
+  HomeRoute: HomeRoute,
+  OnboardingRoute: OnboardingRoute,
+  PendingRoute: PendingRoute,
+  ProfileRoute: ProfileRoute,
+  RegisterRoute: RegisterRoute,
+  SupportRoute: SupportRoute,
+  DeliveryActiveRoute: DeliveryActiveRoute,
+  DeliveryNewRoute: DeliveryNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
