@@ -4,7 +4,7 @@ import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, Loader2, Eye, EyeOff, Mail, Lock, KeyRound, ChevronLeft, ArrowRight } from "lucide-react";
+import { Shield, Loader2, Eye, EyeOff, Mail, Lock, KeyRound, ChevronLeft, CheckCircle2 } from "lucide-react";
 import courier from "@/assets/courier-hero.png";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
@@ -185,7 +185,7 @@ function Login() {
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/3 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-        {/* LOGOUT / BACK BUTTON IN PASSWORD RESET */}
+        {/* BACK BUTTON IN PASSWORD RESET */}
         {view !== "login" && (
           <button 
             type="button" 
@@ -201,18 +201,20 @@ function Login() {
         )}
 
         {/* Top Logo and Cover Area */}
-        <div className="px-6 pt-14 pb-4 flex flex-col items-center text-center gap-4 relative z-10">
+        <div className="px-6 pt-12 pb-4 flex flex-col items-center text-center gap-4 relative z-10">
           <Logo size="md" className="drop-shadow-sm" />
           {view === "login" && (
             <>
               <img 
                 src={courier} 
                 alt="Entregador" 
-                className="w-[200px] h-[200px] object-contain mt-2 drop-shadow-md animate-in fade-in zoom-in-95 duration-500" 
+                className="w-[220px] h-[220px] object-contain mt-2 drop-shadow-md animate-in fade-in zoom-in-95 duration-500" 
               />
               <div className="space-y-1 mt-1">
-                <h1 className="text-xl font-bold tracking-tight text-foreground">Área do Entregador</h1>
-                <p className="text-xs text-muted-foreground">Faça login para gerenciar suas entregas</p>
+                <h1 className="text-2xl font-black tracking-tight text-foreground">Acelere seus ganhos</h1>
+                <p className="text-xs text-muted-foreground max-w-[280px] leading-relaxed">
+                  Comece suas entregas hoje mesmo, aumente seu faturamento e ganhe mais a cada quilômetro!
+                </p>
               </div>
             </>
           )}
@@ -265,20 +267,7 @@ function Login() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="senha" className="text-xs font-semibold text-foreground/80">Senha</Label>
-                  <button 
-                    type="button" 
-                    onClick={() => {
-                      setError("");
-                      setSuccess("");
-                      setView("forgot");
-                    }}
-                    className="text-xs font-bold text-primary hover:underline"
-                  >
-                    Esqueci minha senha
-                  </button>
-                </div>
+                <Label htmlFor="senha" className="text-xs font-semibold text-foreground/80">Senha</Label>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/70" />
                   <Input 
@@ -298,6 +287,19 @@ function Login() {
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
+                <div className="flex justify-end">
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setError("");
+                      setSuccess("");
+                      setView("forgot");
+                    }}
+                    className="text-xs font-bold text-primary hover:underline"
+                  >
+                    Esqueci minha senha
+                  </button>
+                </div>
               </div>
 
               {error && (
@@ -311,13 +313,13 @@ function Login() {
               </Button>
 
               <Link to="/signup" className="block mt-1">
-                <Button type="button" variant="outline" className="w-full h-12 rounded-xl text-base font-bold border-primary/20 text-primary hover:bg-primary-soft/50 transition-all">
-                  Criar conta de entregador
+                <Button type="button" variant="outline" className="w-full h-12 rounded-xl text-base font-bold border-primary text-primary hover:bg-primary/5 transition-all">
+                  Criar conta
                 </Button>
               </Link>
 
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-6 pb-4 mt-auto">
-                <Shield className="h-3.5 w-3.5 text-green-500" />
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
                 Ambiente seguro e criptografado
               </div>
             </form>
