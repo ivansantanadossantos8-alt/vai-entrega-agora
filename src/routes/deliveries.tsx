@@ -30,7 +30,7 @@ function Deliveries() {
   const [loadingAvailable, setLoadingAvailable] = useState(true);
   const [loadingHistory, setLoadingHistory] = useState(true);
 
-  // Fetch available deliveries
+  // Fetch and subscribe to available deliveries in real time
   useEffect(() => {
     const fetch = async () => {
       setLoadingAvailable(true);
@@ -44,7 +44,48 @@ function Deliveries() {
       setAvailable(data || []);
       setLoadingAvailable(false);
     };
+    
     fetch();
+
+    // Subscribe to real-time changes on deliveries table
+    const subscription = supabase
+      .channel("realtime-available-deliveries")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "deliveries" },
+        (payload) => {
+          const { eventType, new: newRow, old: oldRow } = payload;
+          
+          if (eventType === "INSERT") {
+            if (newRow.status === "available") {
+              setAvailable((prev) => [newRow, ...prev]);
+            }
+          } else if (eventType === "DELETE") {
+            setAvailable((prev) => prev.filter((d) => d.id !== oldRow.id));
+          } else if (eventType === "UPDATE") {
+            if (newRow.status === "available") {
+              setAvailable((prev) => {
+                const exists = prev.some((d) => d.id === newRow.id);
+                if (exists) {
+                  return prev.map((d) => (d.id === newRow.id ? newRow : d));
+                } else {
+                  return [newRow, ...prev].sort(
+                    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                  );
+                }
+              });
+            } else {
+              // Status changed (e.g. accepted), remove from available list
+              setAvailable((prev) => prev.filter((d) => d.id !== newRow.id));
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   }, []);
 
   // Fetch history
@@ -133,19 +174,9 @@ function Deliveries() {
 
                 <div className="px-4 py-3 bg-muted/20 border-t border-border/50 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {d.tags?.includes("Pronto para retirar") ? (
-                      <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-green-600 bg-green-500/10 px-2 py-1 rounded-md">
-                        <PackageOpen className="h-3 w-3" /> Pronto
-                      </span>
-                    ) : d.payment_method === "cash" ? (
-                      <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-orange-600 bg-orange-500/10 px-2 py-1 rounded-md">
-                        <Banknote className="h-3 w-3" /> Dinheiro
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-1 rounded-md">
-                        Pelo App
-                      </span>
-                    )}
+                    <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-green-600 bg-green-500/10 px-2.5 py-1 rounded-md">
+                      <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" /> Disponível
+                    </span>
                   </div>
                   <div className="flex items-center gap-1 text-xs font-bold text-primary">
                     Detalhes <ChevronRight className="h-4 w-4" />
