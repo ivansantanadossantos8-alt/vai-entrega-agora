@@ -81,7 +81,7 @@ function Register() {
           address: formData.address,
         }).eq("id", user.id);
       } else {
-        setError("Erro ao salvar perfil: " + profileError.message);
+        setError("Erro ao salvar perfil. Verifique sua internet.");
         setLoading(false);
         return;
       }
@@ -100,7 +100,7 @@ function Register() {
     });
 
     if (vehicleError && vehicleError.code !== "23505") {
-      setError("Erro ao salvar veículo: " + vehicleError.message);
+      setError("Erro ao salvar veículo. Tente novamente.");
       setLoading(false);
       return;
     }

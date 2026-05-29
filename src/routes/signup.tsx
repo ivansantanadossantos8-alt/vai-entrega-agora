@@ -4,7 +4,7 @@ import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useState } from "react";
 
@@ -24,20 +24,31 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const translateError = (msg: string) => {
+    if (msg.includes("Load failed") || msg.includes("Failed to fetch")) return "Erro de conexão. Verifique sua internet.";
+    if (msg.includes("already registered")) return "Esse e-mail já está cadastrado. Faça login.";
+    if (msg.includes("weak_password") || msg.includes("least 6 characters")) return "A senha deve ter pelo menos 6 caracteres.";
+    if (msg.includes("Invalid login")) return "E-mail ou senha incorretos.";
+    if (msg.includes("not confirmed")) return "Por favor, confirme seu e-mail antes de entrar.";
+    return "Ocorreu um erro inesperado. Tente novamente.";
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!email || !password || !confirmPassword) {
-      setError("Preencha todos os campos.");
+      setError("Por favor, preencha todos os campos.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("As senhas não coincidem.");
+      setError("As senhas não coincidem. Digite senhas iguais.");
       return;
     }
 
@@ -48,18 +59,18 @@ function Signup() {
 
     setLoading(true);
 
-    const { error: signUpError } = await signUp(email, password);
+    try {
+      const { error: signUpError } = await signUp(email, password);
 
-    if (signUpError) {
-      if (signUpError.message.includes("already registered")) {
-        setError("Esse e-mail já está registrado. Faça login.");
+      if (signUpError) {
+        setError(translateError(signUpError.message));
+        setLoading(false);
       } else {
-        setError(signUpError.message);
+        navigate({ to: "/onboarding" });
       }
+    } catch (err: any) {
+      setError(translateError(err.message || "Erro de conexão"));
       setLoading(false);
-    } else {
-      // User created successfully, navigate to onboarding to complete profile
-      navigate({ to: "/onboarding" });
     }
   };
 
@@ -86,29 +97,47 @@ function Signup() {
             className="h-12 rounded-xl" 
           />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2 relative">
           <Label htmlFor="senha">Senha</Label>
-          <Input 
-            id="senha" 
-            type="password" 
-            required 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••" 
-            className="h-12 rounded-xl" 
-          />
+          <div className="relative">
+            <Input 
+              id="senha" 
+              type={showPassword ? "text" : "password"} 
+              required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••" 
+              className="h-12 rounded-xl pr-10" 
+            />
+            <button 
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2 relative">
           <Label htmlFor="repete_senha">Repita a Senha</Label>
-          <Input 
-            id="repete_senha" 
-            type="password" 
-            required 
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="••••••••" 
-            className="h-12 rounded-xl" 
-          />
+          <div className="relative">
+            <Input 
+              id="repete_senha" 
+              type={showConfirmPassword ? "text" : "password"} 
+              required 
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••" 
+              className="h-12 rounded-xl pr-10" 
+            />
+            <button 
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
 
         {error && (

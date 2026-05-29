@@ -4,7 +4,7 @@ import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, Loader2 } from "lucide-react";
+import { Shield, Loader2, Eye, EyeOff } from "lucide-react";
 import courier from "@/assets/courier-hero.png";
 import { useAuth } from "@/lib/auth";
 import { useState, useEffect } from "react";
@@ -24,6 +24,7 @@ function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +34,13 @@ function Login() {
       navigate({ to: "/home" });
     }
   }, [user, authLoading, navigate]);
+
+  const translateError = (msg: string) => {
+    if (msg.includes("Load failed") || msg.includes("Failed to fetch")) return "Erro de conexão. Verifique sua internet.";
+    if (msg.includes("Invalid login")) return "E-mail ou senha incorretos.";
+    if (msg.includes("not confirmed")) return "Por favor, confirme seu e-mail antes de entrar.";
+    return "Ocorreu um erro inesperado. Tente novamente.";
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,17 +53,18 @@ function Login() {
       return;
     }
 
-    const { error: signInError } = await signIn(email, password);
+    try {
+      const { error: signInError } = await signIn(email, password);
 
-    if (signInError) {
-      if (signInError.message.includes("Invalid login")) {
-        setError("E-mail ou senha incorretos.");
+      if (signInError) {
+        setError(translateError(signInError.message));
+        setLoading(false);
       } else {
-        setError(signInError.message);
+        navigate({ to: "/home" });
       }
+    } catch (err: any) {
+      setError(translateError(err.message || "Erro de conexão"));
       setLoading(false);
-    } else {
-      navigate({ to: "/home" });
     }
   };
 
@@ -78,17 +87,26 @@ function Login() {
             className="h-12 rounded-xl" 
           />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2 relative">
           <Label htmlFor="senha">Senha</Label>
-          <Input 
-            id="senha" 
-            type="password" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••" 
-            className="h-12 rounded-xl" 
-          />
-          <button type="button" className="text-xs text-primary font-medium ml-auto block">
+          <div className="relative">
+            <Input 
+              id="senha" 
+              type={showPassword ? "text" : "password"} 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••" 
+              className="h-12 rounded-xl pr-10" 
+            />
+            <button 
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+          </div>
+          <button type="button" className="text-xs text-primary font-medium ml-auto block mt-2">
             Esqueci minha senha
           </button>
         </div>
