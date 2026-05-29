@@ -2,43 +2,69 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileFrame } from "@/components/MobileFrame";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { TabBar } from "@/components/TabBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
-  List, Activity, History, MapPin, Store, 
+  List, History, MapPin, Store, 
   CheckCircle2, XCircle, Clock, ChevronRight, 
-  Navigation2, PackageOpen, CreditCard, Banknote
+  PackageOpen, Banknote
 } from "lucide-react";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/deliveries")({
   component: Deliveries,
 });
 
 const tabs = [
-  { id: "Disponíveis", icon: List },
-  { id: "Histórico", icon: History }
-] as const;
+  { id: "Disponíveis" as const, icon: List },
+  { id: "Histórico" as const, icon: History }
+];
 
 type TabType = typeof tabs[number]["id"];
 
-const available = [
-  { name: "Pizza Prime", bairro: "Centro", km: "3,2 km", val: "R$ 7,50", tag: "Pronto para retirar", type: "pizza", payment: "online" },
-  { name: "Sushi House", bairro: "Vila Nova", km: "4,5 km", val: "R$ 9,00", tag: "Pagamento na entrega", type: "food", payment: "cash" },
-  { name: "Mercado Bom Preço", bairro: "São Jorge", km: "2,1 km", val: "R$ 6,80", tag: "Volumoso", type: "market", payment: "online" },
-  { name: "Lanchonete do Zé", bairro: "Jardim", km: "3,9 km", val: "R$ 8,20", tag: "Pronto para retirar", type: "food", payment: "online" },
-];
-
-
-
-const history = [
-  { dateHeader: "Hoje" },
-  { name: "La Brasa Burger", date: "12:40", val: "R$ 8,50", status: "Concluída" },
-  { name: "Sushi House", date: "11:20", val: "R$ 9,50", status: "Concluída" },
-  { dateHeader: "Ontem" },
-  { name: "Mercado Bom Preço", date: "18:30", val: "R$ 6,80", status: "Cancelada" },
-];
-
 function Deliveries() {
   const [tab, setTab] = useState<TabType>("Disponíveis");
+  const { user } = useAuth();
+  const [available, setAvailable] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
+  const [loadingAvailable, setLoadingAvailable] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(true);
+
+  // Fetch available deliveries
+  useEffect(() => {
+    const fetch = async () => {
+      setLoadingAvailable(true);
+      const { data } = await supabase
+        .from("deliveries")
+        .select("*")
+        .eq("status", "available")
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      setAvailable(data || []);
+      setLoadingAvailable(false);
+    };
+    fetch();
+  }, []);
+
+  // Fetch history
+  useEffect(() => {
+    if (!user) return;
+    const fetch = async () => {
+      setLoadingHistory(true);
+      const { data } = await supabase
+        .from("deliveries")
+        .select("*")
+        .eq("courier_id", user.id)
+        .in("status", ["completed", "cancelled"])
+        .order("completed_at", { ascending: false })
+        .limit(20);
+
+      setHistory(data || []);
+      setLoadingHistory(false);
+    };
+    fetch();
+  }, [user]);
 
   return (
     <MobileFrame>
@@ -71,43 +97,53 @@ function Deliveries() {
       <div className="px-5 py-4 flex-1 overflow-y-auto space-y-4 pb-24">
         
         {/* TAB: DISPONÍVEIS */}
-        {tab === "Disponíveis" &&
-          available.map((d, idx) => (
-            <Link key={idx} to="/delivery/new" className="block animate-in fade-in slide-in-from-bottom-2 duration-300" style={{ animationDelay: `${idx * 50}ms`, fillMode: 'both' }}>
+        {tab === "Disponíveis" && (
+          loadingAvailable ? (
+            <div className="text-center py-10 text-sm text-muted-foreground">Carregando entregas...</div>
+          ) : available.length === 0 ? (
+            <div className="text-center py-10">
+              <Store className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+              <div className="text-sm font-semibold text-muted-foreground">Nenhuma entrega disponível</div>
+              <div className="text-xs text-muted-foreground/70 mt-1">Novas entregas aparecerão aqui.</div>
+            </div>
+          ) : available.map((d, idx) => (
+            <Link key={d.id || idx} to="/delivery/new" className="block animate-in fade-in slide-in-from-bottom-2 duration-300" style={{ animationDelay: `${idx * 50}ms`, fillMode: 'both' as any }}>
               <div className="rounded-2xl bg-background border border-border shadow-[0_2px_12px_rgba(0,0,0,0.03)] overflow-hidden transition-all hover:border-primary/30 active:scale-[0.98]">
-                {/* Header of Card */}
                 <div className="p-4 flex items-start gap-4">
                   <div className="h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/10">
                     <Store className="h-6 w-6" />
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
-                    <div className="text-sm font-bold truncate">{d.name}</div>
+                    <div className="text-sm font-bold truncate">{d.store_name}</div>
                     <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
                       <MapPin className="h-3 w-3" />
-                      <span className="truncate">{d.bairro}</span>
+                      <span className="truncate">{d.pickup_address}</span>
                       <span className="text-muted-foreground/30">•</span>
-                      <span className="font-semibold text-foreground/70">{d.km}</span>
+                      <span className="font-semibold text-foreground/70">
+                        {d.distance_to_store ? `${Number(d.distance_to_store).toFixed(1)} km` : "--"}
+                      </span>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className="text-lg font-black text-primary tracking-tight">{d.val}</div>
+                    <div className="text-lg font-black text-primary tracking-tight">
+                      R$ {Number(d.price).toFixed(2).replace(".", ",")}
+                    </div>
                   </div>
                 </div>
 
-                {/* Footer of Card */}
                 <div className="px-4 py-3 bg-muted/20 border-t border-border/50 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {d.tag === "Pronto para retirar" ? (
+                    {d.tags?.includes("Pronto para retirar") ? (
                       <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-green-600 bg-green-500/10 px-2 py-1 rounded-md">
                         <PackageOpen className="h-3 w-3" /> Pronto
                       </span>
-                    ) : d.tag === "Pagamento na entrega" ? (
+                    ) : d.payment_method === "cash" ? (
                       <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-orange-600 bg-orange-500/10 px-2 py-1 rounded-md">
                         <Banknote className="h-3 w-3" /> Dinheiro
                       </span>
                     ) : (
                       <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-1 rounded-md">
-                        {d.tag}
+                        Pelo App
                       </span>
                     )}
                   </div>
@@ -117,46 +153,48 @@ function Deliveries() {
                 </div>
               </div>
             </Link>
-          ))}
-
+          ))
+        )}
 
         {/* TAB: HISTÓRICO */}
-        {tab === "Histórico" &&
-          history.map((d, i) => {
-            if (d.dateHeader) {
-              return (
-                <div key={i} className="text-xs font-bold text-muted-foreground uppercase tracking-widest pt-4 pb-1 pl-1">
-                  {d.dateHeader}
-                </div>
-              );
-            }
-            
-            const isCompleted = d.status === "Concluída";
+        {tab === "Histórico" && (
+          loadingHistory ? (
+            <div className="text-center py-10 text-sm text-muted-foreground">Carregando histórico...</div>
+          ) : history.length === 0 ? (
+            <div className="text-center py-10">
+              <History className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+              <div className="text-sm font-semibold text-muted-foreground">Nenhuma entrega concluída ainda</div>
+              <div className="text-xs text-muted-foreground/70 mt-1">Suas entregas finalizadas aparecerão aqui.</div>
+            </div>
+          ) : history.map((d, i) => {
+            const isCompleted = d.status === "completed";
+            const date = d.completed_at ? new Date(d.completed_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "--";
             
             return (
-              <div key={i} className="rounded-2xl bg-background border border-border p-4 flex items-center gap-4 shadow-sm">
+              <div key={d.id || i} className="rounded-2xl bg-background border border-border p-4 flex items-center gap-4 shadow-sm">
                 <div className={`h-12 w-12 rounded-full flex items-center justify-center shrink-0 ${isCompleted ? 'bg-green-500/10 text-green-600' : 'bg-destructive/10 text-destructive'}`}>
                   {isCompleted ? <CheckCircle2 className="h-6 w-6" /> : <XCircle className="h-6 w-6" />}
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold truncate">{d.name}</div>
+                  <div className="text-sm font-bold truncate">{d.store_name}</div>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
-                    <Clock className="h-3 w-3" /> {d.date}
+                    <Clock className="h-3 w-3" /> {date}
                   </div>
                 </div>
                 
                 <div className="text-right shrink-0">
                   <div className={`text-sm font-black ${!isCompleted ? 'line-through text-muted-foreground opacity-50' : 'text-foreground'}`}>
-                    {d.val}
+                    R$ {Number(d.price).toFixed(2).replace(".", ",")}
                   </div>
                   <div className={`text-[10px] font-bold uppercase tracking-wider mt-0.5 ${isCompleted ? 'text-green-600' : 'text-destructive'}`}>
-                    {d.status}
+                    {isCompleted ? "Concluída" : "Cancelada"}
                   </div>
                 </div>
               </div>
             );
-          })}
+          })
+        )}
       </div>
 
       <TabBar />

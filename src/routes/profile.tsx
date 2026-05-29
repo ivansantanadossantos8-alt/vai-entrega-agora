@@ -4,9 +4,10 @@ import { TabBar } from "@/components/TabBar";
 import { 
   Star, ChevronRight, LogOut, User, Bike, 
   Shield, Settings as SettingsIcon, ShieldAlert, 
-  Camera, Headphones, MessageSquare 
+  Camera, Headphones 
 } from "lucide-react";
 import { useState, useRef } from "react";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -34,22 +35,20 @@ function Profile() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { profile, signOut } = useAuth();
 
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Simulando alteração de foto
-    if (e.target.files && e.target.files[0]) {
-      console.log("Foto selecionada:", e.target.files[0].name);
-      // Aqui haveria lógica de upload
-    }
-  };
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     navigate({ to: "/" });
   };
+
+  const firstName = profile?.name?.split(" ")[0] || "Usuário";
+  const initials = profile?.name ? profile.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() : "U";
+  const statusLabel = profile?.status === "approved" ? "Aprovado" : profile?.status === "blocked" ? "Bloqueado" : "Pendente";
 
   return (
     <MobileFrame>
@@ -62,7 +61,7 @@ function Profile() {
                 className="h-16 w-16 rounded-full bg-white text-primary font-bold text-2xl flex items-center justify-center shadow-lg border-2 border-white/20 cursor-pointer overflow-hidden"
                 onClick={handlePhotoClick}
               >
-                V
+                {initials}
               </div>
               <button 
                 onClick={handlePhotoClick}
@@ -75,27 +74,26 @@ function Profile() {
                 ref={fileInputRef} 
                 className="hidden" 
                 accept="image/*"
-                onChange={handlePhotoChange}
               />
             </div>
 
             <div className="flex-1 text-white">
-              <div className="text-xl font-bold">Victor da Silva</div>
-              <div className="text-sm text-primary-foreground/80 font-medium">São Paulo · Aprovado</div>
+              <div className="text-xl font-bold">{profile?.name || "Carregando..."}</div>
+              <div className="text-sm text-primary-foreground/80 font-medium">
+                {profile?.city || "Cidade"}{profile?.state ? `, ${profile.state}` : ""} · {statusLabel}
+              </div>
               <div className="mt-2 flex items-center gap-1.5 text-xs bg-white/10 w-fit px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/10">
                 <Star className="h-3.5 w-3.5 fill-warning text-warning" />
-                <span className="font-semibold">4,8</span>
-                <span className="opacity-80">· 32 entregas</span>
+                <span className="font-semibold">{profile?.rating ? String(profile.rating).replace(".", ",") : "--"}</span>
+                <span className="opacity-80">· {profile?.total_deliveries || 0} entregas</span>
               </div>
             </div>
           </div>
           
-          {/* Decorative background circle */}
           <div className="absolute -top-12 -right-12 w-48 h-48 bg-white opacity-5 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-black opacity-10 rounded-full blur-2xl pointer-events-none" />
         </div>
 
-        {/* Content overlapping the header slightly */}
         <div className="px-5 -mt-6 relative z-20 pb-8">
           {groups.map((g, gi) => (
             <div key={gi} className="mb-5 rounded-2xl bg-background border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)] divide-y divide-border overflow-hidden">

@@ -1,9 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MobileFrame } from "@/components/MobileFrame";
 import { TabBar } from "@/components/TabBar";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bell, MapPin, Star, Clock, Package, Wallet, AlertCircle, ShieldCheck } from "lucide-react";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/home")({
   component: Home,
@@ -11,15 +13,50 @@ export const Route = createFileRoute("/home")({
 
 function Home() {
   const [online, setOnline] = useState(true);
+  const { profile, user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({ deliveries: 0, earnings: 0 });
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate({ to: "/" });
+    }
+  }, [user, authLoading, navigate]);
+
+  // Fetch today stats
+  useEffect(() => {
+    if (!user) return;
+    const fetchStats = async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const { data } = await supabase
+        .from("deliveries")
+        .select("price")
+        .eq("courier_id", user.id)
+        .eq("status", "completed")
+        .gte("completed_at", today);
+
+      if (data) {
+        setStats({
+          deliveries: data.length,
+          earnings: data.reduce((sum, d) => sum + Number(d.price), 0),
+        });
+      }
+    };
+    fetchStats();
+  }, [user]);
+
+  const firstName = profile?.name?.split(" ")[0] || "Entregador";
+
   return (
     <MobileFrame>
       <header className="px-5 pt-6 pb-4 flex items-center gap-3">
         <div className="h-11 w-11 rounded-full bg-primary-soft flex items-center justify-center font-bold text-primary">
-          V
+          {firstName[0]?.toUpperCase() || "E"}
         </div>
         <div className="flex-1">
           <div className="text-xs text-muted-foreground">Olá,</div>
-          <div className="text-base font-semibold leading-tight">Victor</div>
+          <div className="text-base font-semibold leading-tight">{firstName}</div>
         </div>
         <button className="relative h-10 w-10 rounded-full bg-muted flex items-center justify-center">
           <Bell className="h-5 w-5" />
@@ -63,10 +100,10 @@ function Home() {
         <div className="mt-5">
           <div className="text-sm font-semibold mb-2">Resumo de hoje</div>
           <div className="grid grid-cols-2 gap-3">
-            <Stat icon={Package} label="Entregas" value="5" />
-            <Stat icon={Wallet} label="Ganhos" value="R$ 48,50" />
-            <Stat icon={Clock} label="Online" value="3h 20m" />
-            <Stat icon={Star} label="Avaliação" value="4,8" />
+            <Stat icon={Package} label="Entregas" value={String(stats.deliveries || profile?.total_deliveries || 0)} />
+            <Stat icon={Wallet} label="Ganhos" value={`R$ ${stats.earnings.toFixed(2).replace(".", ",")}`} />
+            <Stat icon={Clock} label="Online" value="--" />
+            <Stat icon={Star} label="Avaliação" value={profile?.rating ? String(profile.rating).replace(".", ",") : "--"} />
           </div>
         </div>
 
