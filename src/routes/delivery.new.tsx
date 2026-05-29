@@ -1,17 +1,32 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { MobileFrame } from "@/components/MobileFrame";
 import { Button } from "@/components/ui/button";
 import { MapPin, Clock, Route as RouteIcon, Wallet, X } from "lucide-react";
+import { DeliveryMapOSM } from "@/components/DeliveryMapOSM";
 
 export const Route = createFileRoute("/delivery/new")({
   component: NewDelivery,
 });
 
 function NewDelivery() {
+  const [routeData, setRouteData] = useState<{ distance: number; duration: number } | null>(null);
+
+  const handleRouteCalculated = (data: any) => {
+    setRouteData({
+      distance: data.distance,
+      duration: data.duration,
+    });
+  };
+
   return (
     <MobileFrame>
       <div className="absolute inset-0 w-full h-full bg-muted z-0">
-        <img src="/map-preview.png" alt="Mapa da Rota" className="w-full h-full object-cover" />
+        <DeliveryMapOSM 
+          origin={{ lat: -23.5505, lng: -46.6333 }} 
+          destination={{ lat: -23.5615, lng: -46.6550 }} 
+          onRouteCalculated={handleRouteCalculated}
+        />
       </div>
 
       <Link
@@ -62,8 +77,8 @@ function NewDelivery() {
             </div>
 
             <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-border">
-              <Mini icon={RouteIcon} v="4,2 km" l="Total" />
-              <Mini icon={Clock} v="25 min" l="Tempo" />
+              <Mini icon={RouteIcon} v={routeData ? `${(routeData.distance / 1000).toFixed(1)} km` : "4,2 km"} l="Total" />
+              <Mini icon={Clock} v={routeData ? `${Math.ceil(routeData.duration / 60)} min` : "25 min"} l="Tempo" />
               <Mini icon={Wallet} v="R$ 8,50" l="Valor" />
             </div>
           </div>

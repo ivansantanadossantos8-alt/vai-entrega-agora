@@ -12,7 +12,7 @@ export function Logo({ size = "md", className = "" }: { size?: "sm" | "md" | "lg
       <img 
         src={logoImg} 
         alt="Vai Até Você" 
-        className={`${heights} w-auto object-contain mix-blend-multiply`} 
+        className={`${heights} w-auto object-contain drop-shadow-md`} 
       />
     </div>
   );

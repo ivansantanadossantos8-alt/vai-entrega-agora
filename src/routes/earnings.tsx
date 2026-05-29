@@ -45,7 +45,15 @@ function Earnings() {
         </div>
 
         <div className="mt-6">
-          <div className="text-sm font-semibold mb-3">Histórico financeiro</div>
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-sm font-semibold">Histórico financeiro</div>
+            <select className="text-xs bg-muted text-muted-foreground px-2 py-1.5 rounded-lg border-none outline-none font-medium">
+              <option>Hoje</option>
+              <option>Esta semana</option>
+              <option>Este mês</option>
+              <option>Todos os períodos</option>
+            </select>
+          </div>
           <div className="rounded-2xl border border-border divide-y divide-border">
             {history.map((h, i) => (
               <div key={i} className="flex items-center justify-between px-4 py-3">

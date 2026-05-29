@@ -100,35 +100,33 @@ function Signup() {
           </div>
         </div>
 
-        <form onSubmit={handleSignup} className="px-6 flex-1 flex flex-col gap-4 relative z-10 pt-2 pb-6">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-xs font-semibold text-foreground/80">E-mail</Label>
+        <form onSubmit={handleSignup} className="px-6 flex-1 flex flex-col gap-3 relative z-10 pt-2 pb-6">
+          <div className="space-y-1.5">
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/70" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
               <Input 
                 id="email" 
                 type="email"
                 required 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="seuemail@email.com" 
-                className="h-12 pl-11 rounded-xl border-border bg-background focus-visible:ring-primary/20 focus-visible:border-primary transition-all text-sm"
+                placeholder="E-mail de acesso" 
+                className="h-12 pl-11 rounded-2xl border-none bg-muted/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all text-sm font-medium shadow-inner"
               />
             </div>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="senha" className="text-xs font-semibold text-foreground/80">Senha</Label>
+          <div className="space-y-1.5">
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/70" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
               <Input 
                 id="senha" 
                 type={showPassword ? "text" : "password"} 
                 required 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres" 
-                className="h-12 pl-11 pr-11 rounded-xl border-border bg-background focus-visible:ring-primary/20 focus-visible:border-primary transition-all text-sm" 
+                placeholder="Senha (mín. 6 caracteres)" 
+                className="h-12 pl-11 pr-11 rounded-2xl border-none bg-muted/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all text-sm font-medium shadow-inner" 
               />
               <button 
                 type="button"
@@ -140,18 +138,17 @@ function Signup() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="repete_senha" className="text-xs font-semibold text-foreground/80">Confirmar Senha</Label>
+          <div className="space-y-1.5">
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/70" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
               <Input 
                 id="repete_senha" 
                 type={showConfirmPassword ? "text" : "password"} 
                 required 
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Digite a mesma senha" 
-                className="h-12 pl-11 pr-11 rounded-xl border-border bg-background focus-visible:ring-primary/20 focus-visible:border-primary transition-all text-sm" 
+                placeholder="Confirme a senha" 
+                className="h-12 pl-11 pr-11 rounded-2xl border-none bg-muted/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all text-sm font-medium shadow-inner" 
               />
               <button 
                 type="button"
@@ -164,25 +161,20 @@ function Signup() {
           </div>
 
           {error && (
-            <div className="bg-destructive/10 border border-destructive/20 text-destructive text-xs font-semibold p-3.5 rounded-xl text-center animate-shake">
+            <div className="bg-destructive/10 border border-destructive/20 text-destructive text-xs font-semibold p-3 rounded-xl text-center animate-shake">
               {error}
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full h-12 rounded-xl text-base font-bold shadow-elevated bg-primary text-white hover:bg-primary/95 mt-4 transition-all">
-            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Criar sua conta"}
+          <Button type="submit" disabled={loading} className="w-full h-12 rounded-2xl text-base font-bold shadow-[0_4px_14px_rgba(255,100,0,0.3)] bg-gradient-to-r from-primary to-orange-500 text-white hover:opacity-90 mt-2 transition-all">
+            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Criar conta"}
           </Button>
           
-          <Link to="/" className="block mt-1">
-            <Button type="button" variant="ghost" className="w-full h-12 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all">
+          <Link to="/" className="block mt-auto">
+            <Button type="button" variant="ghost" className="w-full h-12 rounded-2xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all">
               Já tenho conta. Fazer login.
             </Button>
           </Link>
-
-          <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-6 pb-4 mt-auto">
-            <ShieldCheck className="h-3.5 w-3.5 text-green-500" />
-            Seus dados estão protegidos
-          </div>
         </form>
       </div>
     </MobileFrame>
