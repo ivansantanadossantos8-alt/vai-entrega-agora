@@ -5,7 +5,6 @@ const tabs = [
   { to: "/home", label: "Início", icon: Home },
   { to: "/deliveries", label: "Entregas", icon: Package },
   { to: "/earnings", label: "Ganhos", icon: Wallet },
-  { to: "/support", label: "Suporte", icon: LifeBuoy },
   { to: "/profile", label: "Perfil", icon: User },
 ] as const;
 
@@ -13,7 +12,7 @@ export function TabBar() {
   const { pathname } = useLocation();
   return (
     <nav className="sticky bottom-0 bg-background/95 backdrop-blur border-t border-border">
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-4">
         {tabs.map((t) => {
           const active = pathname.startsWith(t.to);
           const Icon = t.icon;

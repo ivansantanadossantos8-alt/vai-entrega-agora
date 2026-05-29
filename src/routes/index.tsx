@@ -41,7 +41,7 @@ function Login() {
         <Link to="/home" className="block">
           <Button className="w-full h-12 rounded-xl text-base font-semibold">Entrar</Button>
         </Link>
-        <Link to="/onboarding" className="block">
+        <Link to="/signup" className="block">
           <Button variant="outline" className="w-full h-12 rounded-xl text-base font-semibold border-primary/30 text-primary hover:bg-primary-soft">
             Criar conta
           </Button>

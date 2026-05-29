@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SupportRouteImport } from './routes/support'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PendingRouteImport } from './routes/pending'
@@ -17,14 +18,25 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as DeliveriesRouteImport } from './routes/deliveries'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProfileVehicleRouteImport } from './routes/profile.vehicle'
+import { Route as ProfileTermsRouteImport } from './routes/profile.terms'
+import { Route as ProfileSupportRouteImport } from './routes/profile.support'
+import { Route as ProfileSettingsRouteImport } from './routes/profile.settings'
+import { Route as ProfileSecurityRouteImport } from './routes/profile.security'
+import { Route as ProfileReviewsRouteImport } from './routes/profile.reviews'
+import { Route as ProfilePersonalRouteImport } from './routes/profile.personal'
 import { Route as DeliveryNewRouteImport } from './routes/delivery.new'
 import { Route as DeliveryActiveRouteImport } from './routes/delivery.active'
 
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -62,15 +74,45 @@ const DeliveriesRoute = DeliveriesRouteImport.update({
   path: '/deliveries',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileVehicleRoute = ProfileVehicleRouteImport.update({
+  id: '/vehicle',
+  path: '/vehicle',
+  getParentRoute: () => ProfileRoute,
+} as any)
+const ProfileTermsRoute = ProfileTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => ProfileRoute,
+} as any)
+const ProfileSupportRoute = ProfileSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => ProfileRoute,
+} as any)
+const ProfileSettingsRoute = ProfileSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ProfileRoute,
+} as any)
+const ProfileSecurityRoute = ProfileSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => ProfileRoute,
+} as any)
+const ProfileReviewsRoute = ProfileReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => ProfileRoute,
+} as any)
+const ProfilePersonalRoute = ProfilePersonalRouteImport.update({
+  id: '/personal',
+  path: '/personal',
+  getParentRoute: () => ProfileRoute,
 } as any)
 const DeliveryNewRoute = DeliveryNewRouteImport.update({
   id: '/delivery/new',
@@ -85,52 +127,72 @@ const DeliveryActiveRoute = DeliveryActiveRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/deliveries': typeof DeliveriesRoute
   '/earnings': typeof EarningsRoute
   '/home': typeof HomeRoute
   '/onboarding': typeof OnboardingRoute
   '/pending': typeof PendingRoute
-  '/profile': typeof ProfileRoute
+  '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
+  '/signup': typeof SignupRoute
   '/support': typeof SupportRoute
   '/delivery/active': typeof DeliveryActiveRoute
   '/delivery/new': typeof DeliveryNewRoute
+  '/profile/personal': typeof ProfilePersonalRoute
+  '/profile/reviews': typeof ProfileReviewsRoute
+  '/profile/security': typeof ProfileSecurityRoute
+  '/profile/settings': typeof ProfileSettingsRoute
+  '/profile/support': typeof ProfileSupportRoute
+  '/profile/terms': typeof ProfileTermsRoute
+  '/profile/vehicle': typeof ProfileVehicleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/deliveries': typeof DeliveriesRoute
   '/earnings': typeof EarningsRoute
   '/home': typeof HomeRoute
   '/onboarding': typeof OnboardingRoute
   '/pending': typeof PendingRoute
-  '/profile': typeof ProfileRoute
+  '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
+  '/signup': typeof SignupRoute
   '/support': typeof SupportRoute
   '/delivery/active': typeof DeliveryActiveRoute
   '/delivery/new': typeof DeliveryNewRoute
+  '/profile/personal': typeof ProfilePersonalRoute
+  '/profile/reviews': typeof ProfileReviewsRoute
+  '/profile/security': typeof ProfileSecurityRoute
+  '/profile/settings': typeof ProfileSettingsRoute
+  '/profile/support': typeof ProfileSupportRoute
+  '/profile/terms': typeof ProfileTermsRoute
+  '/profile/vehicle': typeof ProfileVehicleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/deliveries': typeof DeliveriesRoute
   '/earnings': typeof EarningsRoute
   '/home': typeof HomeRoute
   '/onboarding': typeof OnboardingRoute
   '/pending': typeof PendingRoute
-  '/profile': typeof ProfileRoute
+  '/profile': typeof ProfileRouteWithChildren
   '/register': typeof RegisterRoute
+  '/signup': typeof SignupRoute
   '/support': typeof SupportRoute
   '/delivery/active': typeof DeliveryActiveRoute
   '/delivery/new': typeof DeliveryNewRoute
+  '/profile/personal': typeof ProfilePersonalRoute
+  '/profile/reviews': typeof ProfileReviewsRoute
+  '/profile/security': typeof ProfileSecurityRoute
+  '/profile/settings': typeof ProfileSettingsRoute
+  '/profile/support': typeof ProfileSupportRoute
+  '/profile/terms': typeof ProfileTermsRoute
+  '/profile/vehicle': typeof ProfileVehicleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
     | '/deliveries'
     | '/earnings'
     | '/home'
@@ -138,13 +200,20 @@ export interface FileRouteTypes {
     | '/pending'
     | '/profile'
     | '/register'
+    | '/signup'
     | '/support'
     | '/delivery/active'
     | '/delivery/new'
+    | '/profile/personal'
+    | '/profile/reviews'
+    | '/profile/security'
+    | '/profile/settings'
+    | '/profile/support'
+    | '/profile/terms'
+    | '/profile/vehicle'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/deliveries'
     | '/earnings'
     | '/home'
@@ -152,13 +221,20 @@ export interface FileRouteTypes {
     | '/pending'
     | '/profile'
     | '/register'
+    | '/signup'
     | '/support'
     | '/delivery/active'
     | '/delivery/new'
+    | '/profile/personal'
+    | '/profile/reviews'
+    | '/profile/security'
+    | '/profile/settings'
+    | '/profile/support'
+    | '/profile/terms'
+    | '/profile/vehicle'
   id:
     | '__root__'
     | '/'
-    | '/admin'
     | '/deliveries'
     | '/earnings'
     | '/home'
@@ -166,21 +242,29 @@ export interface FileRouteTypes {
     | '/pending'
     | '/profile'
     | '/register'
+    | '/signup'
     | '/support'
     | '/delivery/active'
     | '/delivery/new'
+    | '/profile/personal'
+    | '/profile/reviews'
+    | '/profile/security'
+    | '/profile/settings'
+    | '/profile/support'
+    | '/profile/terms'
+    | '/profile/vehicle'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
   DeliveriesRoute: typeof DeliveriesRoute
   EarningsRoute: typeof EarningsRoute
   HomeRoute: typeof HomeRoute
   OnboardingRoute: typeof OnboardingRoute
   PendingRoute: typeof PendingRoute
-  ProfileRoute: typeof ProfileRoute
+  ProfileRoute: typeof ProfileRouteWithChildren
   RegisterRoute: typeof RegisterRoute
+  SignupRoute: typeof SignupRoute
   SupportRoute: typeof SupportRoute
   DeliveryActiveRoute: typeof DeliveryActiveRoute
   DeliveryNewRoute: typeof DeliveryNewRoute
@@ -193,6 +277,13 @@ declare module '@tanstack/react-router' {
       path: '/support'
       fullPath: '/support'
       preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -244,19 +335,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeliveriesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/profile/vehicle': {
+      id: '/profile/vehicle'
+      path: '/vehicle'
+      fullPath: '/profile/vehicle'
+      preLoaderRoute: typeof ProfileVehicleRouteImport
+      parentRoute: typeof ProfileRoute
+    }
+    '/profile/terms': {
+      id: '/profile/terms'
+      path: '/terms'
+      fullPath: '/profile/terms'
+      preLoaderRoute: typeof ProfileTermsRouteImport
+      parentRoute: typeof ProfileRoute
+    }
+    '/profile/support': {
+      id: '/profile/support'
+      path: '/support'
+      fullPath: '/profile/support'
+      preLoaderRoute: typeof ProfileSupportRouteImport
+      parentRoute: typeof ProfileRoute
+    }
+    '/profile/settings': {
+      id: '/profile/settings'
+      path: '/settings'
+      fullPath: '/profile/settings'
+      preLoaderRoute: typeof ProfileSettingsRouteImport
+      parentRoute: typeof ProfileRoute
+    }
+    '/profile/security': {
+      id: '/profile/security'
+      path: '/security'
+      fullPath: '/profile/security'
+      preLoaderRoute: typeof ProfileSecurityRouteImport
+      parentRoute: typeof ProfileRoute
+    }
+    '/profile/reviews': {
+      id: '/profile/reviews'
+      path: '/reviews'
+      fullPath: '/profile/reviews'
+      preLoaderRoute: typeof ProfileReviewsRouteImport
+      parentRoute: typeof ProfileRoute
+    }
+    '/profile/personal': {
+      id: '/profile/personal'
+      path: '/personal'
+      fullPath: '/profile/personal'
+      preLoaderRoute: typeof ProfilePersonalRouteImport
+      parentRoute: typeof ProfileRoute
     }
     '/delivery/new': {
       id: '/delivery/new'
@@ -275,16 +408,39 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ProfileRouteChildren {
+  ProfilePersonalRoute: typeof ProfilePersonalRoute
+  ProfileReviewsRoute: typeof ProfileReviewsRoute
+  ProfileSecurityRoute: typeof ProfileSecurityRoute
+  ProfileSettingsRoute: typeof ProfileSettingsRoute
+  ProfileSupportRoute: typeof ProfileSupportRoute
+  ProfileTermsRoute: typeof ProfileTermsRoute
+  ProfileVehicleRoute: typeof ProfileVehicleRoute
+}
+
+const ProfileRouteChildren: ProfileRouteChildren = {
+  ProfilePersonalRoute: ProfilePersonalRoute,
+  ProfileReviewsRoute: ProfileReviewsRoute,
+  ProfileSecurityRoute: ProfileSecurityRoute,
+  ProfileSettingsRoute: ProfileSettingsRoute,
+  ProfileSupportRoute: ProfileSupportRoute,
+  ProfileTermsRoute: ProfileTermsRoute,
+  ProfileVehicleRoute: ProfileVehicleRoute,
+}
+
+const ProfileRouteWithChildren =
+  ProfileRoute._addFileChildren(ProfileRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
   DeliveriesRoute: DeliveriesRoute,
   EarningsRoute: EarningsRoute,
   HomeRoute: HomeRoute,
   OnboardingRoute: OnboardingRoute,
   PendingRoute: PendingRoute,
-  ProfileRoute: ProfileRoute,
+  ProfileRoute: ProfileRouteWithChildren,
   RegisterRoute: RegisterRoute,
+  SignupRoute: SignupRoute,
   SupportRoute: SupportRoute,
   DeliveryActiveRoute: DeliveryActiveRoute,
   DeliveryNewRoute: DeliveryNewRoute,
@@ -292,3 +448,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const steps = [
-  { icon: ClipboardList, title: "Faça seu cadastro", text: "Informe seus dados, documentos e veículo." },
+  { icon: ClipboardList, title: "Faça seu cadastro", text: "Informe seus dados pessoais e de veículo." },
   { icon: Clock, title: "Aguarde a análise", text: "Verificamos suas informações com segurança." },
   { icon: CheckCircle2, title: "Fique disponível", text: "Receba entregas na sua região." },
   { icon: Truck, title: "Aceite corridas", text: "Veja valor, distância e bairro antes de aceitar." },
@@ -54,10 +54,10 @@ function Onboarding() {
         <div className="mt-6 rounded-2xl bg-muted p-4">
           <div className="text-xs font-semibold mb-2">Você vai precisar de:</div>
           <ul className="text-xs text-muted-foreground space-y-1 list-disc pl-4">
-            <li>Documento pessoal e CPF</li>
-            <li>Foto do rosto e CNH (moto/carro)</li>
-            <li>Foto do veículo e da bag</li>
-            <li>Chave Pix e região de atuação</li>
+            <li>Documento pessoal (CPF)</li>
+            <li>Foto clara do seu rosto</li>
+            <li>Foto do veículo e da placa (moto/carro)</li>
+            <li>Região de atuação</li>
           </ul>
         </div>
 
@@ -73,7 +73,7 @@ function Onboarding() {
       <div className="px-6 py-4 border-t border-border bg-background">
         <Link to="/register" className="block">
           <Button disabled={!agree} className="w-full h-12 rounded-xl text-base font-semibold">
-            Começar cadastro
+            Continuar a criação da sua conta
           </Button>
         </Link>
       </div>

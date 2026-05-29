@@ -9,12 +9,8 @@ export const Route = createFileRoute("/pending")({
 
 const checks = [
   "Dados pessoais enviados",
-  "Foto de perfil enviada",
-  "Documentos enviados",
+  "Foto de segurança enviada",
   "Veículo cadastrado",
-  "Bag enviada",
-  "Dados de recebimento enviados",
-  "Região de atuação enviada",
 ];
 
 function Pending() {

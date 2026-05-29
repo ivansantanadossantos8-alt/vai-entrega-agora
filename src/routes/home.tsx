@@ -89,7 +89,7 @@ function Home() {
         {/* Notices */}
         <div className="mt-5 space-y-2">
           <Notice icon={MapPin} text="Mantenha a localização ativa para receber entregas." />
-          <Notice icon={ShieldCheck} text="Use bag em todas as entregas." />
+          <Notice icon={ShieldCheck} text="Dirija com segurança e respeite o trânsito." />
           <Notice icon={AlertCircle} text="Confirme os códigos corretamente." />
         </div>
       </div>
